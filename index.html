@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0f1f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bass Journey" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Bass Journey｜時澈修煉錄</title>
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">BASS JOURNEY</div>
+        <h1>時澈修煉錄</h1>
+        <p>每一顆音，都在塑造未來的你。</p>
+      </div>
+      <button class="ghost" id="installBtn" hidden>安裝 App</button>
+    </header>
+
+    <main>
+      <section id="homePage" class="page active">
+        <div class="hero card">
+          <div class="eyebrow">TODAY'S QUEST</div>
+          <h2 id="dailyQuote"></h2>
+          <div class="hero-meta">
+            <span id="todayLabel"></span>
+            <span>本月主修：<b id="mainSongLabel"></b></span>
+          </div>
+          <div class="button-row">
+            <button class="primary" data-go="todayPage">開始今天的修煉</button>
+            <button class="secondary" data-go="statsPage">查看統計</button>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="card stat-card">
+            <span>Level</span><strong id="levelLabel">Lv.1</strong>
+            <div class="meter"><i id="xpMeter"></i></div>
+            <small id="xpLabel">0 / 500 XP</small>
+          </article>
+          <article class="card stat-card"><span>連續修煉</span><strong id="streakLabel">0 天</strong><small>完成任一項即計入。</small></article>
+          <article class="card stat-card"><span>本月時數</span><strong id="monthHoursLabel">0 小時</strong><small>依實際紀錄計算。</small></article>
+          <article class="card stat-card"><span>今日完成度</span><strong id="todayCompletionLabel">0%</strong><div class="meter"><i id="todayCompletionMeter"></i></div></article>
+        </div>
+
+        <div class="dashboard-grid two">
+          <article class="card">
+            <h3>老師本週指定歌曲</h3>
+            <input id="weeklySongInput" type="text" placeholder="輸入老師本週指定歌曲" />
+            <h3>下次上課日期</h3>
+            <input id="lessonDateInput" type="date" />
+            <p class="muted" id="lessonCountdown"></p>
+          </article>
+          <article class="card">
+            <h3>本週完成度</h3>
+            <div id="weeklyBars" class="bar-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="todayPage" class="page">
+        <div class="card page-head">
+          <div><div class="eyebrow">DAILY TRAINING</div><h2 id="entryTitle"></h2></div>
+          <div class="date-control"><input id="entryDate" type="date" /><button class="ghost" id="goTodayBtn">今天</button></div>
+        </div>
+
+        <div class="today-grid">
+          <div class="card wide">
+            <div id="sessions"></div>
+            <div class="completion-row">
+              <div><b>今日完成度</b><span id="completionText">0%</span></div>
+              <div class="meter grow"><i id="completionMeter"></i></div>
+            </div>
+          </div>
+
+          <aside class="card">
+            <h3>練習計時器</h3>
+            <select id="timerCategory">
+              <option>Fingerstyle</option><option>左手</option><option>即興</option><option>Slap</option><option>歌曲</option><option>其他</option>
+            </select>
+            <div class="timer" id="timerDisplay">00:00:00</div>
+            <div class="button-row"><button class="primary" id="timerStart">開始</button><button class="secondary" id="timerStop">停止並記錄</button></div>
+            <hr />
+            <h3>手動補登分鐘</h3>
+            <div class="mini-grid">
+              <label>早上<input id="morningMins" type="number" min="0" /></label>
+              <label>晚上<input id="eveningMins" type="number" min="0" /></label>
+              <label>零碎<input id="extraMins" type="number" min="0" /></label>
+            </div>
+            <strong id="totalTodayLabel" class="big-number">0 分鐘</strong>
+            <hr />
+            <h3>今日心情</h3>
+            <div id="moodRow" class="mood-row"></div>
+            <label>今日能量<select id="energySelect"><option value="">未填</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          </aside>
+        </div>
+
+        <div class="journal-grid">
+          <article class="card"><h3>今天聽了什麼？</h3><textarea id="listenNote" placeholder="歌名、時間點、Bass tone、Groove……"></textarea></article>
+          <article class="card"><h3>今天最大的突破</h3><textarea id="breakthroughNote"></textarea></article>
+          <article class="card"><h3>今天卡住的地方</h3><textarea id="stuckNote"></textarea></article>
+          <article class="card"><h3>今天錄了什麼？</h3><textarea id="videoNote" placeholder="影片名稱或連結"></textarea></article>
+          <article class="card full"><h3>今日總結</h3><textarea id="journalNote" placeholder="今天的狀態、明天最先改善什麼……"></textarea></article>
+          <article class="card full action-card"><div><b>資料會自動保存在這台裝置。</b><p class="muted">建議每週匯出備份一次。</p></div><button class="primary" id="finishTodayBtn">完成今日修煉</button></article>
+        </div>
+      </section>
+
+      <section id="teacherPage" class="page">
+        <div class="split-grid">
+          <article class="card">
+            <h2>老師回饋資料庫</h2>
+            <label>日期<input id="feedbackDate" type="date" /></label>
+            <label>分類<select id="feedbackCategory"><option>右手</option><option>左手</option><option>Slap</option><option>Groove</option><option>即興</option><option>節奏</option><option>心態</option><option>其他</option></select></label>
+            <label>老師原話／重點<textarea id="feedbackText"></textarea></label>
+            <label>我的下一步<textarea id="feedbackAction"></textarea></label>
+            <button class="primary" id="addFeedbackBtn">加入紀錄</button>
+          </article>
+          <article class="card"><h2>歷史回饋</h2><div id="feedbackList" class="item-list"></div></article>
+        </div>
+      </section>
+
+      <section id="songsPage" class="page">
+        <div class="split-grid">
+          <article class="card">
+            <h2>新增歌曲</h2>
+            <label>歌曲名稱<input id="songName" type="text" /></label>
+            <label>狀態<select id="songStatus"><option>練習中</option><option>暫停</option><option>已完成</option><option>團練中</option></select></label>
+            <label>完成度<input id="songProgress" type="number" min="0" max="100" /></label>
+            <label>BPM<input id="songBpm" type="number" min="0" /></label>
+            <label>技巧與心得<textarea id="songNote"></textarea></label>
+            <button class="primary" id="addSongBtn">儲存歌曲</button>
+          </article>
+          <article class="card"><h2>Song Journey</h2><div id="songList" class="item-list"></div></article>
+        </div>
+      </section>
+
+      <section id="statsPage" class="page">
+        <div class="dashboard-grid two">
+          <article class="card"><h2>近 14 天練習時間</h2><canvas id="timeChart" width="900" height="300"></canvas></article>
+          <article class="card"><h2>成就</h2><div id="achievementList" class="item-list"></div></article>
+          <article class="card full"><h2>備份與還原</h2><div class="button-row"><button class="primary" id="exportBtn">匯出備份 JSON</button><label class="secondary file-label">匯入備份<input id="importFile" type="file" accept=".json" hidden /></label><button class="danger" id="resetBtn">清除全部資料</button></div></article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="active" data-page="homePage">首頁</button>
+      <button data-page="todayPage">今日</button>
+      <button data-page="teacherPage">老師</button>
+      <button data-page="songsPage">歌曲</button>
+      <button data-page="statsPage">統計</button>
+    </nav>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
