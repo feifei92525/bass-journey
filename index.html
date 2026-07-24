@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>時澈 Bass Journey｜90 Days</title>
+<title>時澈 Bass Journey｜長期練習紀錄</title>
 <style>
   :root{
     --bg:#fff7fb;--card:#ffffff;--ink:#30212a;--muted:#7b6671;--accent:#d95f9f;--accent2:#7e6be8;--line:#f0d7e6;--ok:#2f9f73;--warn:#f2a541;--soft:#fff0f7;
@@ -76,7 +76,16 @@
         <strong>日期</strong>
         <button class="gray" onclick="resetToday()">清空今日</button>
       </div>
-      <div class="mini" style="margin-top:8px">2026/7/12 起算的 90 天旅程，至 2026/10/9。手機與電腦可用 Supabase 同步。</div>
+      <div class="mini" style="margin-top:8px">從 2026/7/12 開始，沒有結束日期。用月份切換，紀錄可以一直延續下去。</div>
+      <div class="row" style="margin-top:10px;gap:6px">
+        <button class="gray" onclick="changeMonth(-1)" aria-label="上個月">‹</button>
+        <strong id="monthLabel" style="flex:1;text-align:center"></strong>
+        <button class="gray" onclick="changeMonth(1)" aria-label="下個月">›</button>
+      </div>
+      <div class="row" style="margin-top:7px;gap:6px">
+        <button class="secondary" onclick="goToday()" style="flex:1">今天</button>
+        <input id="jumpDate" type="date" min="2026-07-12" onchange="jumpToDate(this.value)" style="flex:1;min-width:0">
+      </div>
       <div class="xpBox">
         <strong id="levelText">Lv.1</strong>
         <div class="meter"><div class="bar" id="xpBar"></div></div>
@@ -174,8 +183,9 @@ let currentUser = null;
 let syncTimer = null;
 let isApplyingCloud = false;
 const start = makeDate(2026,7,12);
-const end = makeDate(2026,10,9);
-let currentKey = localDateKey(start);
+const today = new Date(); today.setHours(0,0,0,0);
+let currentKey = localDateKey(today >= start ? today : start);
+let visibleMonth = makeDate(parseKey(currentKey).getFullYear(), parseKey(currentKey).getMonth()+1, 1);
 const weekday = ['日','一','二','三','四','五','六'];
 const encouragements = [
   '🍡 今天不用證明自己有天分，只要證明自己有回來練。',
@@ -245,9 +255,33 @@ function templates(shift){
   };
   return map[shift]||map.A;
 }
+function changeMonth(delta){
+  visibleMonth=makeDate(visibleMonth.getFullYear(), visibleMonth.getMonth()+1+delta, 1);
+  renderDates();
+}
+function goToday(){
+  const d=new Date(); d.setHours(0,0,0,0);
+  const target=d>=start?d:start;
+  currentKey=localDateKey(target);
+  visibleMonth=makeDate(target.getFullYear(),target.getMonth()+1,1);
+  renderAll();
+}
+function jumpToDate(value){
+  if(!value) return;
+  const d=parseKey(value);
+  if(d<start){ alert('Bass Journey 從 2026/7/12 開始。'); return; }
+  currentKey=value;
+  visibleMonth=makeDate(d.getFullYear(),d.getMonth()+1,1);
+  renderAll();
+}
 function renderDates(){
   const box=document.getElementById('dateList'); box.innerHTML='';
-  for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
+  const monthStart=makeDate(visibleMonth.getFullYear(),visibleMonth.getMonth()+1,1);
+  const monthEnd=makeDate(visibleMonth.getFullYear(),visibleMonth.getMonth()+2,0);
+  document.getElementById('monthLabel').textContent=`${monthStart.getFullYear()} 年 ${monthStart.getMonth()+1} 月`;
+  document.getElementById('jumpDate').value=currentKey;
+  for(let d=new Date(monthStart); d<=monthEnd; d.setDate(d.getDate()+1)){
+    if(d<start) continue;
     const key=localDateKey(d), data=store()[key]||{};
     const done=countDone(key).pct;
     const btn=document.createElement('button'); btn.className='dateBtn'+(key===currentKey?' active':'');
@@ -262,7 +296,7 @@ function renderMain(){
   const mainSong=mainSongForDate(d);
   const dayNum=Math.floor((d-start)/86400000)+1;
   document.getElementById('dayTitle').textContent=md(d);
-  document.getElementById('daySub').textContent=`Bass Journey Day ${dayNum} / 90`;
+  document.getElementById('daySub').textContent=`Bass Journey Day ${dayNum}｜長期紀錄`;
   document.getElementById('mainSongPill').textContent=`🎯 主修：${mainSong}`;
   document.getElementById('mainSongTitle').textContent=`《${mainSong}》本週研究法`;
   document.getElementById('mainSongPlan').textContent=mainSongPlan(mainSong,d);
