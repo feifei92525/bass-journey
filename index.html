@@ -1,163 +1,417 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0f1f" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Bass Journey" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="apple-touch-icon" href="icon-192.png" />
-  <link rel="stylesheet" href="styles.css" />
-  <title>Bass Journey｜時澈修煉錄</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>時澈 Bass Journey｜90 Days</title>
+<style>
+  :root{
+    --bg:#fff7fb;--card:#ffffff;--ink:#30212a;--muted:#7b6671;--accent:#d95f9f;--accent2:#7e6be8;--line:#f0d7e6;--ok:#2f9f73;--warn:#f2a541;--soft:#fff0f7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:linear-gradient(135deg,#fff7fb,#f5f3ff);color:var(--ink)}
+  header{padding:24px 18px 14px;text-align:center}
+  h1{margin:0;font-size:30px;letter-spacing:.5px}
+  .sub{color:var(--muted);margin-top:8px;font-size:14px}
+  .wrap{max-width:1120px;margin:0 auto;padding:12px}
+  .topgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 8px 20px rgba(130,78,120,.08)}
+  .stat b{font-size:24px;color:var(--accent)}
+  .stat span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+  .layout{display:grid;grid-template-columns:285px 1fr;gap:14px}
+  .panel,.main{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:22px;box-shadow:0 8px 24px rgba(130,78,120,.09)}
+  .panel{padding:14px;position:sticky;top:10px;height:calc(100vh - 20px);overflow:auto}
+  .main{padding:18px;min-height:650px}
+  .dateList{display:grid;gap:8px;margin-top:12px}
+  .dateBtn{border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px;text-align:left;cursor:pointer;color:var(--ink)}
+  .dateBtn.active{border-color:var(--accent);background:#fff0f7;box-shadow:0 0 0 2px rgba(217,95,159,.12)}
+  .dateBtn small{display:block;color:var(--muted);margin-top:2px}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .titleRow{justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+  .pill{display:inline-flex;align-items:center;gap:6px;background:#fff0f7;border:1px solid var(--line);color:#8e3a68;border-radius:999px;padding:7px 10px;font-size:13px}
+  select,input[type="text"],input[type="number"],textarea{border:1px solid var(--line);border-radius:12px;background:#fff;padding:9px 10px;color:var(--ink);font:inherit}
+  textarea{width:100%;min-height:84px;resize:vertical}
+  .listenBox textarea{min-height:120px}
+  button{font:inherit;border:0;border-radius:12px;background:var(--accent);color:#fff;padding:9px 12px;cursor:pointer}
+  button.secondary{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+  button.gray{background:#f4edf2;color:#6b5660}
+  .sessions{display:grid;gap:14px}
+  .session{border:1px solid var(--line);border-radius:18px;padding:14px;background:#fff}
+  .session h3{margin:0 0 8px;font-size:18px;color:#6d3d89}
+  .time{color:var(--muted);font-size:13px;margin-bottom:8px}
+  .task{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px dashed #f0d7e6}
+  .task:first-of-type{border-top:0}
+  input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent);margin-top:2px}
+  .task label{line-height:1.45;flex:1}
+  .task.done label{text-decoration:line-through;color:var(--muted)}
+  .meter{height:12px;background:#f3e5ee;border-radius:999px;overflow:hidden;margin:8px 0 0}
+  .bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width .25s}
+  .mini{font-size:13px;color:var(--muted);line-height:1.5}
+  .sectionTitle{margin:18px 0 8px;font-size:17px}
+  .noteBox{background:#fffaf0;border:1px solid #f4d9a5;border-radius:16px;padding:12px;color:#6a4a1d;line-height:1.55}
+  .encourage{background:linear-gradient(135deg,#fff0f7,#f2efff);border:1px solid var(--line);border-radius:18px;padding:14px;margin:14px 0;color:#5f3158;line-height:1.65}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .songBox{background:#f8f6ff;border:1px solid #ddd6ff;border-radius:16px;padding:12px}
+  .songBox h4{margin:0 0 8px;color:#5541a8}
+  .xpBox{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+  .footer{font-size:12px;color:var(--muted);text-align:center;padding:20px}
+  @media(max-width:760px){.topgrid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.panel{position:static;height:auto}.two{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <div id="toast" class="toast" aria-live="polite"></div>
-  <div class="app-shell">
-    <header class="topbar">
-      <div>
-        <div class="eyebrow">BASS JOURNEY</div>
-        <h1>時澈修煉錄</h1>
-        <p>每一顆音，都在塑造未來的你。</p>
-      </div>
-      <button class="ghost" id="installBtn" hidden>安裝 App</button>
-    </header>
-
-    <main>
-      <section id="homePage" class="page active">
-        <div class="hero card">
-          <div class="eyebrow">TODAY'S QUEST</div>
-          <h2 id="dailyQuote"></h2>
-          <div class="hero-meta">
-            <span id="todayLabel"></span>
-            <span>本月主修：<b id="mainSongLabel"></b></span>
-          </div>
-          <div class="button-row">
-            <button class="primary" data-go="todayPage">開始今天的修煉</button>
-            <button class="secondary" data-go="statsPage">查看統計</button>
-          </div>
-        </div>
-
-        <div class="dashboard-grid">
-          <article class="card stat-card">
-            <span>Level</span><strong id="levelLabel">Lv.1</strong>
-            <div class="meter"><i id="xpMeter"></i></div>
-            <small id="xpLabel">0 / 500 XP</small>
-          </article>
-          <article class="card stat-card"><span>連續修煉</span><strong id="streakLabel">0 天</strong><small>完成任一項即計入。</small></article>
-          <article class="card stat-card"><span>本月時數</span><strong id="monthHoursLabel">0 小時</strong><small>依實際紀錄計算。</small></article>
-          <article class="card stat-card"><span>今日完成度</span><strong id="todayCompletionLabel">0%</strong><div class="meter"><i id="todayCompletionMeter"></i></div></article>
-        </div>
-
-        <div class="dashboard-grid two">
-          <article class="card">
-            <h3>老師本週指定歌曲</h3>
-            <input id="weeklySongInput" type="text" placeholder="輸入老師本週指定歌曲" />
-            <h3>下次上課日期</h3>
-            <input id="lessonDateInput" type="date" />
-            <p class="muted" id="lessonCountdown"></p>
-          </article>
-          <article class="card">
-            <h3>本週完成度</h3>
-            <div id="weeklyBars" class="bar-list"></div>
-          </article>
-        </div>
-      </section>
-
-      <section id="todayPage" class="page">
-        <div class="card page-head">
-          <div><div class="eyebrow">DAILY TRAINING</div><h2 id="entryTitle"></h2></div>
-          <div class="date-control"><input id="entryDate" type="date" /><button class="ghost" id="goTodayBtn">今天</button></div>
-        </div>
-
-        <div class="today-grid">
-          <div class="card wide">
-            <div id="sessions"></div>
-            <div class="completion-row">
-              <div><b>今日完成度</b><span id="completionText">0%</span></div>
-              <div class="meter grow"><i id="completionMeter"></i></div>
-            </div>
-          </div>
-
-          <aside class="card">
-            <h3>練習計時器</h3>
-            <select id="timerCategory">
-              <option>Fingerstyle</option><option>左手</option><option>即興</option><option>Slap</option><option>歌曲</option><option>其他</option>
-            </select>
-            <div class="timer" id="timerDisplay">00:00:00</div>
-            <div class="button-row"><button class="primary" id="timerStart">開始</button><button class="secondary" id="timerStop">停止並記錄</button></div>
-            <hr />
-            <h3>手動補登分鐘</h3>
-            <div class="mini-grid">
-              <label>早上<input id="morningMins" type="number" min="0" /></label>
-              <label>晚上<input id="eveningMins" type="number" min="0" /></label>
-              <label>零碎<input id="extraMins" type="number" min="0" /></label>
-            </div>
-            <strong id="totalTodayLabel" class="big-number">0 分鐘</strong>
-            <hr />
-            <h3>今日心情</h3>
-            <div id="moodRow" class="mood-row"></div>
-            <label>今日能量<select id="energySelect"><option value="">未填</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
-          </aside>
-        </div>
-
-        <div class="journal-grid">
-          <article class="card"><h3>今天聽了什麼？</h3><textarea id="listenNote" placeholder="歌名、時間點、Bass tone、Groove……"></textarea></article>
-          <article class="card"><h3>今天最大的突破</h3><textarea id="breakthroughNote"></textarea></article>
-          <article class="card"><h3>今天卡住的地方</h3><textarea id="stuckNote"></textarea></article>
-          <article class="card"><h3>今天錄了什麼？</h3><textarea id="videoNote" placeholder="影片名稱或連結"></textarea></article>
-          <article class="card full"><h3>今日總結</h3><textarea id="journalNote" placeholder="今天的狀態、明天最先改善什麼……"></textarea></article>
-          <article class="card full action-card"><div><b>資料會自動保存在這台裝置。</b><p class="muted">建議每週匯出備份一次。</p></div><button class="primary" id="finishTodayBtn">完成今日修煉</button></article>
-        </div>
-      </section>
-
-      <section id="teacherPage" class="page">
-        <div class="split-grid">
-          <article class="card">
-            <h2>老師回饋資料庫</h2>
-            <label>日期<input id="feedbackDate" type="date" /></label>
-            <label>分類<select id="feedbackCategory"><option>右手</option><option>左手</option><option>Slap</option><option>Groove</option><option>即興</option><option>節奏</option><option>心態</option><option>其他</option></select></label>
-            <label>老師原話／重點<textarea id="feedbackText"></textarea></label>
-            <label>我的下一步<textarea id="feedbackAction"></textarea></label>
-            <button class="primary" id="addFeedbackBtn">加入紀錄</button>
-          </article>
-          <article class="card"><h2>歷史回饋</h2><div id="feedbackList" class="item-list"></div></article>
-        </div>
-      </section>
-
-      <section id="songsPage" class="page">
-        <div class="split-grid">
-          <article class="card">
-            <h2>新增歌曲</h2>
-            <label>歌曲名稱<input id="songName" type="text" /></label>
-            <label>狀態<select id="songStatus"><option>練習中</option><option>暫停</option><option>已完成</option><option>團練中</option></select></label>
-            <label>完成度<input id="songProgress" type="number" min="0" max="100" /></label>
-            <label>BPM<input id="songBpm" type="number" min="0" /></label>
-            <label>技巧與心得<textarea id="songNote"></textarea></label>
-            <button class="primary" id="addSongBtn">儲存歌曲</button>
-          </article>
-          <article class="card"><h2>Song Journey</h2><div id="songList" class="item-list"></div></article>
-        </div>
-      </section>
-
-      <section id="statsPage" class="page">
-        <div class="dashboard-grid two">
-          <article class="card"><h2>近 14 天練習時間</h2><canvas id="timeChart" width="900" height="300"></canvas></article>
-          <article class="card"><h2>成就</h2><div id="achievementList" class="item-list"></div></article>
-          <article class="card full"><h2>備份與還原</h2><div class="button-row"><button class="primary" id="exportBtn">匯出備份 JSON</button><label class="secondary file-label">匯入備份<input id="importFile" type="file" accept=".json" hidden /></label><button class="danger" id="resetBtn">清除全部資料</button></div></article>
-        </div>
-      </section>
-    </main>
-
-    <nav class="bottom-nav">
-      <button class="active" data-page="homePage">首頁</button>
-      <button data-page="todayPage">今日</button>
-      <button data-page="teacherPage">老師</button>
-      <button data-page="songsPage">歌曲</button>
-      <button data-page="statsPage">統計</button>
-    </nav>
+<header>
+  <h1>🎸 時澈 Bass Journey</h1>
+  <div class="sub">每天勾選、紀錄、累積。不是靠天分，是靠每天把手打開。</div>
+</header>
+<div class="wrap">
+  <div class="topgrid">
+    <div class="stat"><b id="statDays">0</b><span>完成天數</span></div>
+    <div class="stat"><b id="statTasks">0%</b><span>今日完成率</span></div>
+    <div class="stat"><b id="statHours">0</b><span>今日練習小時</span></div>
+    <div class="stat"><b id="statStreak">0</b><span>連續紀錄天數</span></div>
   </div>
-  <script src="app.js"></script>
+  <div class="layout">
+    <aside class="panel">
+      <div class="row" style="justify-content:space-between">
+        <strong>日期</strong>
+        <button class="gray" onclick="resetToday()">清空今日</button>
+      </div>
+      <div class="mini" style="margin-top:8px">2026/7/12 起算的 90 天旅程，至 2026/10/9。手機與電腦可用 Supabase 同步。</div>
+      <div class="xpBox">
+        <strong id="levelText">Lv.1</strong>
+        <div class="meter"><div class="bar" id="xpBar"></div></div>
+        <div class="mini" id="xpText">0 XP</div>
+      </div>
+      <div class="xpBox" id="authBox">
+        <strong>☁️ 雲端同步</strong>
+        <div id="signedOutUI" style="margin-top:10px">
+          <input id="authEmail" type="text" inputmode="email" placeholder="你的 Email" style="width:100%">
+          <button onclick="sendMagicLink()" style="width:100%;margin-top:8px">寄登入連結</button>
+          <div class="mini" style="margin-top:8px">手機與電腦登入同一個信箱，就會同步同一份紀錄。</div>
+        </div>
+        <div id="signedInUI" style="display:none;margin-top:10px">
+          <div class="mini" id="userEmail"></div>
+          <div class="mini" id="syncStatus" style="margin-top:6px">已登入</div>
+          <div class="row" style="margin-top:8px">
+            <button class="secondary" onclick="syncAllNow()">立即同步</button>
+            <button class="gray" onclick="signOut()">登出</button>
+          </div>
+        </div>
+      </div>
+      <div class="dateList" id="dateList"></div>
+    </aside>
+    <main class="main">
+      <div class="titleRow row">
+        <div>
+          <h2 id="dayTitle" style="margin:0">Day</h2>
+          <div class="mini" id="daySub"></div>
+        </div>
+        <div class="row">
+          <span class="pill" id="mainSongPill">🎯 主修</span>
+          <span class="pill">📌 副修：老師指定曲</span>
+        </div>
+      </div>
+
+      <div class="encourage" id="encourage"></div>
+
+      <div class="row" style="margin-bottom:12px">
+        <label>今日班別：
+          <select id="shift" onchange="saveShiftAndRender()">
+            <option value="off">休假</option>
+            <option value="A">A班 12:45–17:30</option>
+            <option value="B">B班 17:30–21:45</option>
+            <option value="C">早班 09:45–15:00</option>
+            <option value="D">午後班 13:45–17:45</option>
+            <option value="E">晚班 15:30–21:45</option>
+            <option value="custom">自訂／低能量日</option>
+          </select>
+        </label>
+        <label>今天目標小時：<input id="targetHours" type="number" min="0.5" max="8" step="0.5" value="4" onchange="saveMeta()" style="width:75px"></label>
+        <label>實際小時：<input id="actualHours" type="number" min="0" max="8" step="0.25" value="0" onchange="saveMeta()" style="width:75px"></label>
+      </div>
+
+      <div class="meter"><div class="bar" id="bar"></div></div>
+      <div class="mini" id="progressText"></div>
+
+      <h3 class="sectionTitle">今日時間軸</h3>
+      <div class="sessions" id="sessions"></div>
+
+      <h3 class="sectionTitle">歌曲研究</h3>
+      <div class="two">
+        <div class="songBox">
+          <h4 id="mainSongTitle">主修歌曲</h4>
+          <div class="mini" id="mainSongPlan"></div>
+        </div>
+        <div class="songBox">
+          <h4>老師指定曲</h4>
+          <input id="teacherSong" type="text" placeholder="填入本週老師指定曲" style="width:100%" onchange="saveMeta()">
+          <div class="mini" style="margin-top:8px">只拆一首，拆到真的會。不要再開新坑。</div>
+        </div>
+      </div>
+
+      <h3 class="sectionTitle">今天聽了什麼？</h3>
+      <div class="listenBox">
+        <textarea id="listening" placeholder="今天聽了哪首歌／哪位 bass 手？聽到什麼？例如：鼓跟 bass 怎麼黏、哪個音色、哪段 groove 值得偷。" oninput="saveMeta()"></textarea>
+      </div>
+
+      <h3 class="sectionTitle">今日紀錄</h3>
+      <textarea id="notes" placeholder="今天最大的問題／突破／老師提醒／BPM 紀錄……" oninput="saveMeta()"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button onclick="exportText()">匯出今日紀錄</button>
+        <button class="secondary" onclick="copySummary()">複製週摘要</button>
+      </div>
+      <div class="noteBox" style="margin-top:14px">🧠 低能量日規則：只完成 Fingerstyle 20 分＋左手 20 分＋即興 20 分，也算有守住今天。不要讓焦慮把整天打掉。</div>
+    </main>
+  </div>
+</div>
+<div class="footer" id="footerStatus">未登入時資料保存在此瀏覽器；登入後會同步到 Supabase。</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://hnalykfgfsewigjngeij.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_UzphASuc5NprBV01hBC5Sw_UP82DqN8';
+const cloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+let currentUser = null;
+let syncTimer = null;
+let isApplyingCloud = false;
+const start = makeDate(2026,7,12);
+const end = makeDate(2026,10,9);
+let currentKey = localDateKey(start);
+const weekday = ['日','一','二','三','四','五','六'];
+const encouragements = [
+  '🍡 今天不用證明自己有天分，只要證明自己有回來練。',
+  '🎸 一顆乾淨的根音，比十顆慌張的音更像 Bass 手。',
+  '🌱 手指慢沒關係，慢慢練到它聽你的話。',
+  '🔥 今天的基本功很無聊，但它會在舞台上保護你。',
+  '🫧 放鬆不是偷懶，是讓速度有地方長出來。',
+  '🧠 先彈，再聽，再修。不要每顆音都先審判自己。',
+  '🌙 今天只要比昨天更穩一點，就已經很了不起。',
+  '💪 不是練到手酸才叫努力，練到動作更省力才叫變強。',
+  '🎧 Bass 的工作不是塞滿，而是讓整首歌站穩。',
+  '🪄 允許錯音，耳朵才會開始長大。',
+  '🚶 今天走一步也算走。不要因為走不遠就坐回原地。',
+  '🎵 你的理性不是敵人，讓它下課後再分析就好。',
+  '🧩 每天一點點，最後會拼成你想成為的 Bass 手。',
+  '🌊 Groove 不是用力推，是穩穩地流。',
+  '🍬 今天的你不用完美，只要不要逃走。',
+  '⚡ 速度會來，但前提是你的手先學會不緊張。',
+  '📌 老師說的每個缺點，都是你下一個升級點。',
+  '🌟 你不是慢，你是在補一個會陪你很久的地基。',
+  '🎥 錄下來不是為了羞辱自己，是為了讓未來的你看見進步。',
+  '🖤 今天也請相信：穩定比漂亮更難，也更值錢。'
+];
+function makeDate(y,m,d){ return new Date(y, m-1, d, 0, 0, 0); }
+function localDateKey(d){
+  const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function parseKey(key){ const [y,m,d]=key.split('-').map(Number); return makeDate(y,m,d); }
+function md(d){return `${d.getMonth()+1}/${d.getDate()}（${weekday[d.getDay()]}）`}
+function store(){return JSON.parse(localStorage.getItem('bassJourneyV2')||'{}')}
+function setStore(s){localStorage.setItem('bassJourneyV2', JSON.stringify(s)); updateStats(); if(!isApplyingCloud) scheduleCloudSync();}
+function dayData(){const s=store(); return s[currentKey]||{};}
+function saveDay(data){const s=store(); s[currentKey]={...(s[currentKey]||{}),...data,_updated_at:new Date().toISOString()}; setStore(s)}
+function mainSongForDate(d){
+  if(d.getMonth()+1===7) return '你以為';
+  if(d.getMonth()+1===8) return 'Stone Cold Bush';
+  return '待決定主修曲';
+}
+function mainSongPlan(song, d){
+  const w=d.getDay();
+  const plans=['週日：錄影＋檢討，找出本週最弱段落','週一：右手與音量一致','週二：左手位置與換把','週三：節奏、反拍、跟鼓','週四：Groove 與呼吸感','週五：Tone、動態與音長','週六：完整串接，不能停'];
+  return `${plans[w]}。本月主修：${song}。`;
+}
+function defaultShift(d){
+  const w=d.getDay();
+  if(w===0) return 'E';
+  if(w===6) return 'D';
+  if(w===5) return 'A';
+  return 'A';
+}
+function templates(shift){
+  const baseTasks={
+    tech:['IM alternation：八分＋十六分，注意不要連擊','左手：拇指定位、手型、最小移動','指板熟悉：找 Root／三度／五度，讓左手打開'],
+    music:['即興：Root → Root+節奏 → Chord Tone → Scale → 自由亂加','Groove：只用一顆 Root 玩節奏，不停下來修錯','節奏：反拍／三連音／跟節拍器，選一項'],
+    songs:['主修歌曲：今日指定研究點','老師指定曲：拆最難 4 小節','錄 30 秒檢查右手、左手、放鬆度'],
+    slap:['Slap：Thumb 先建立足夠力道','Pop：放鬆、不要拉弦、不要酸','Ghost note／slap groove：穩定比速度重要']
+  };
+  const map={
+    off:[['08:30–10:00','Session 1｜基本功',baseTasks.tech],['10:30–12:00','Session 2｜音樂能力',baseTasks.music],['15:00–16:30','Session 3｜歌曲研究',baseTasks.songs],['19:00–20:30','Session 4｜Slap＋錄影',baseTasks.slap]],
+    A:[['07:30','起床／早餐',['喝水、吃早餐、整理今天目標']],['08:00–09:30','Session 1｜基本功',baseTasks.tech],['09:45–11:15','Session 2｜即興＋Groove',baseTasks.music],['12:45–17:30','上班',['上班，不安排練琴']],['19:00–20:30','Session 3｜歌曲',baseTasks.songs],['20:45–21:45','Session 4｜Slap／老師影片',baseTasks.slap]],
+    B:[['08:00','起床／早餐',['喝水、吃早餐、曬光 5 分鐘']],['08:30–10:00','Session 1｜基本功',baseTasks.tech],['10:15–11:45','Session 2｜即興＋Groove',baseTasks.music],['12:45–14:15','Session 3｜歌曲',baseTasks.songs],['14:30–15:30','Session 4｜Slap',baseTasks.slap],['17:30–21:45','上班',['上班，回家不硬練']]],
+    C:[['06:50','起床',['喝水、簡單早餐']],['07:10–08:10','Session 1｜最低保證基本功',baseTasks.tech],['09:45–15:00','上班',['上班']],['16:00–17:30','Session 2｜即興＋Groove',baseTasks.music],['17:45–19:15','Session 3｜歌曲',baseTasks.songs],['20:00–20:30','Session 4｜Slap 短練',baseTasks.slap]],
+    D:[['07:30','起床／早餐',['喝水、吃早餐']],['08:00–09:30','Session 1｜基本功',baseTasks.tech],['09:45–11:15','Session 2｜即興＋Groove',baseTasks.music],['13:45–17:45','上班',['上班']],['19:00–20:30','Session 3｜歌曲',baseTasks.songs],['20:30–21:00','Session 4｜Slap 短練',baseTasks.slap]],
+    E:[['08:00','起床／早餐',['喝水、吃早餐']],['08:30–10:00','Session 1｜基本功',baseTasks.tech],['10:15–11:45','Session 2｜即興＋Groove',baseTasks.music],['13:00–14:30','Session 3｜歌曲',baseTasks.songs],['15:30–21:45','上班',['上班，回家只洗澡睡覺']]],
+    custom:[['今天任意時間','低能量最低保證',['Fingerstyle 20 分','左手 20 分','即興 20 分：只用 Root 玩節奏','完成就算守住今天，不補償、不自責']]]
+  };
+  return map[shift]||map.A;
+}
+function renderDates(){
+  const box=document.getElementById('dateList'); box.innerHTML='';
+  for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
+    const key=localDateKey(d), data=store()[key]||{};
+    const done=countDone(key).pct;
+    const btn=document.createElement('button'); btn.className='dateBtn'+(key===currentKey?' active':'');
+    btn.innerHTML=`<b>${md(d)}</b><small>${data.shift||defaultShift(d)}｜${mainSongForDate(d)}｜完成 ${done}%</small>`;
+    btn.onclick=()=>{currentKey=key; renderAll()}; box.appendChild(btn);
+  }
+}
+function renderMain(){
+  const d=parseKey(currentKey);
+  const data=dayData();
+  const shift=data.shift||defaultShift(d);
+  const mainSong=mainSongForDate(d);
+  const dayNum=Math.floor((d-start)/86400000)+1;
+  document.getElementById('dayTitle').textContent=md(d);
+  document.getElementById('daySub').textContent=`Bass Journey Day ${dayNum} / 90`;
+  document.getElementById('mainSongPill').textContent=`🎯 主修：${mainSong}`;
+  document.getElementById('mainSongTitle').textContent=`《${mainSong}》本週研究法`;
+  document.getElementById('mainSongPlan').textContent=mainSongPlan(mainSong,d);
+  document.getElementById('encourage').textContent=encouragements[(dayNum-1)%encouragements.length];
+  document.getElementById('shift').value=shift;
+  document.getElementById('targetHours').value=data.targetHours|| (shift==='off'?6:4);
+  document.getElementById('actualHours').value=data.actualHours||0;
+  document.getElementById('teacherSong').value=data.teacherSong||'';
+  document.getElementById('notes').value=data.notes||'';
+  document.getElementById('listening').value=data.listening||'';
+  const ses=document.getElementById('sessions'); ses.innerHTML='';
+  templates(shift).forEach((s,si)=>{
+    const div=document.createElement('div'); div.className='session';
+    div.innerHTML=`<h3>${s[1]}</h3><div class="time">${s[0]}</div>`;
+    s[2].forEach((t,ti)=>{
+      const id=`${si}-${ti}`; const checked=(data.tasks||{})[id]||false;
+      const row=document.createElement('div'); row.className='task'+(checked?' done':'');
+      row.innerHTML=`<input type="checkbox" ${checked?'checked':''} onchange="toggleTask('${id}', this.checked)"><label>${t}</label>`;
+      div.appendChild(row);
+    });
+    ses.appendChild(div);
+  });
+  updateProgress();
+}
+function countDone(key=currentKey){
+  const d=parseKey(key); const data=store()[key]||{}; const shift=data.shift||defaultShift(d);
+  let total=0, done=0;
+  templates(shift).forEach((s,si)=>s[2].forEach((_,ti)=>{total++; if((data.tasks||{})[`${si}-${ti}`]) done++;}));
+  return {total,done,pct:total?Math.round(done/total*100):0};
+}
+function toggleTask(id,val){
+  const data=dayData(); const tasks={...(data.tasks||{}),[id]:val}; saveDay({tasks}); renderAll();
+}
+function saveMeta(){
+  saveDay({targetHours:+document.getElementById('targetHours').value,actualHours:+document.getElementById('actualHours').value,teacherSong:document.getElementById('teacherSong').value,notes:document.getElementById('notes').value,listening:document.getElementById('listening').value});
+  renderAll();
+}
+function saveShiftAndRender(){saveDay({shift:document.getElementById('shift').value}); renderAll();}
+function updateProgress(){
+  const c=countDone(); document.getElementById('bar').style.width=c.pct+'%'; document.getElementById('progressText').textContent=`已完成 ${c.done}/${c.total} 項（${c.pct}%）`;
+}
+function updateStats(){
+  const s=store();
+  let completed=0, xp=0;
+  Object.keys(s).forEach(k=>{const c=countDone(k); if(c.pct>=60 || (s[k].actualHours||0)>0) completed++; xp += c.done*5 + Math.round((s[k].actualHours||0)*10);});
+  const c=countDone();
+  document.getElementById('statDays').textContent=completed;
+  document.getElementById('statTasks').textContent=c.pct+'%';
+  document.getElementById('statHours').textContent=dayData().actualHours||0;
+  let streak=0;
+  const today=parseKey(currentKey);
+  for(let d=new Date(today); d>=start; d.setDate(d.getDate()-1)){
+    const k=localDateKey(d); const pct=countDone(k).pct;
+    if((s[k]?.actualHours||0)>0 || pct>0) streak++; else break;
+  }
+  document.getElementById('statStreak').textContent=streak;
+  const level=Math.max(1, Math.floor(xp/500)+1); const inLevel=xp%500;
+  document.getElementById('levelText').textContent=`Lv.${level}`;
+  document.getElementById('xpText').textContent=`${inLevel}/500 XP｜累積 ${xp} XP`;
+  document.getElementById('xpBar').style.width=Math.round(inLevel/500*100)+'%';
+}
+function resetToday(){if(confirm('確定清空今天的勾選與紀錄？')){const s=store(); delete s[currentKey]; setStore(s); renderAll();}}
+function exportText(){
+  const data=dayData(); const c=countDone(); const d=parseKey(currentKey);
+  const text=`${currentKey} ${md(d)} Bass Journey 紀錄\n主修：${mainSongForDate(d)}\n班別：${data.shift||''}\n完成率：${c.done}/${c.total} (${c.pct}%)\n實際小時：${data.actualHours||0}\n老師指定曲：${data.teacherSong||''}\n今天聽了：\n${data.listening||''}\n\n筆記：\n${data.notes||''}`;
+  const blob=new Blob([text],{type:'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`bass_${currentKey}.txt`; a.click();
+}
+async function copySummary(){
+  const s=store(); let txt='時澈 Bass Journey 週摘要\n';
+  Object.keys(s).sort().slice(-7).forEach(k=>{txt+=`${k}｜${s[k].actualHours||0}h｜完成 ${countDone(k).pct}%｜聽：${(s[k].listening||'').slice(0,40)}｜${s[k].notes||''}\n`;});
+  await navigator.clipboard.writeText(txt); alert('已複製週摘要！');
+}
+function setSyncStatus(text, isError=false){
+  const el=document.getElementById('syncStatus');
+  if(el){el.textContent=text; el.style.color=isError?'#b42318':'var(--muted)';}
+  const footer=document.getElementById('footerStatus');
+  if(footer) footer.textContent=currentUser ? `已登入 ${currentUser.email}｜${text}` : '未登入時資料保存在此瀏覽器；登入後會同步到 Supabase。';
+}
+function updateAuthUI(){
+  document.getElementById('signedOutUI').style.display=currentUser?'none':'block';
+  document.getElementById('signedInUI').style.display=currentUser?'block':'none';
+  document.getElementById('userEmail').textContent=currentUser?`登入帳號：${currentUser.email}`:'';
+  setSyncStatus(currentUser?'已登入，準備同步':'未登入');
+}
+async function sendMagicLink(){
+  const email=document.getElementById('authEmail').value.trim();
+  if(!email){alert('請先輸入 Email');return;}
+  const redirectTo=location.protocol.startsWith('http') ? location.href.split('#')[0] : undefined;
+  const {error}=await cloud.auth.signInWithOtp({email, options:{emailRedirectTo:redirectTo}});
+  if(error){alert('登入連結寄送失敗：'+error.message);return;}
+  alert('登入連結已寄出。請在信箱點開連結，再回到這個網頁。');
+}
+async function signOut(){
+  await cloud.auth.signOut();
+  currentUser=null; updateAuthUI();
+}
+function scheduleCloudSync(){
+  if(!currentUser)return;
+  clearTimeout(syncTimer);
+  setSyncStatus('等待儲存…');
+  syncTimer=setTimeout(()=>syncAllNow(),800);
+}
+async function pullCloud(){
+  if(!currentUser)return;
+  setSyncStatus('正在下載雲端資料…');
+  const {data,error}=await cloud.from('practice_days').select('practice_date,data,updated_at').eq('user_id',currentUser.id);
+  if(error){setSyncStatus('下載失敗：'+error.message,true);return;}
+  const local=store();
+  for(const row of data||[]){
+    const key=row.practice_date;
+    const cloudTime=new Date(row.updated_at||0).getTime();
+    const localTime=new Date(local[key]?._updated_at||0).getTime();
+    if(!local[key] || cloudTime>=localTime){local[key]={...(row.data||{}),_updated_at:row.updated_at};}
+  }
+  isApplyingCloud=true; setStore(local); isApplyingCloud=false;
+  renderAll();
+  setSyncStatus('雲端資料已載入');
+}
+async function syncAllNow(){
+  if(!currentUser)return;
+  setSyncStatus('正在同步…');
+  const local=store();
+  const rows=Object.entries(local).map(([practice_date,data])=>({
+    user_id:currentUser.id,
+    practice_date,
+    data:{...data,_updated_at:undefined},
+    updated_at:data._updated_at||new Date().toISOString()
+  }));
+  if(rows.length){
+    const {error}=await cloud.from('practice_days').upsert(rows,{onConflict:'user_id,practice_date'});
+    if(error){setSyncStatus('同步失敗：'+error.message,true);return;}
+  }
+  setSyncStatus('同步完成 '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'}));
+}
+async function initAuth(){
+  const {data:{session}}=await cloud.auth.getSession();
+  currentUser=session?.user||null;
+  updateAuthUI();
+  if(currentUser)await pullCloud();
+  cloud.auth.onAuthStateChange(async (_event,session)=>{
+    const previous=currentUser?.id;
+    currentUser=session?.user||null;
+    updateAuthUI();
+    if(currentUser && currentUser.id!==previous) await pullCloud();
+  });
+}
+function renderAll(){renderDates(); renderMain(); updateStats();}
+renderAll();
+initAuth();
+</script>
 </body>
 </html>
