@@ -94,11 +94,13 @@
       <div class="xpBox" id="authBox">
         <strong>☁️ 雲端同步</strong>
         <div id="signedOutUI" style="margin-top:10px">
-          <button onclick="signInWithGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px">
-            <span style="font-size:18px">G</span>
-            使用 Google 登入
-          </button>
-          <div class="mini" style="margin-top:8px">手機與電腦登入同一個 Google 帳號，就會同步同一份紀錄。</div>
+          <input id="authEmail" type="email" inputmode="email" autocomplete="email"
+                 placeholder="Email" style="width:100%">
+          <input id="authPassword" type="password" autocomplete="current-password"
+                 placeholder="密碼（至少 6 碼）" style="width:100%;margin-top:8px">
+          <button onclick="signInWithPassword()" style="width:100%;margin-top:8px">登入</button>
+          <button class="secondary" onclick="signUpWithPassword()" style="width:100%;margin-top:8px">建立帳號</button>
+          <div class="mini" style="margin-top:8px">手機與電腦輸入同一組 Email 與密碼，即可同步同一份紀錄。</div>
         </div>
         <div id="signedInUI" style="display:none;margin-top:10px">
           <div class="mini" id="userEmail"></div>
@@ -175,7 +177,7 @@
     </main>
   </div>
 </div>
-<div class="footer" id="footerStatus">未登入時資料保存在此瀏覽器；使用 Google 使用 Google 登入後會同步到 Supabase。</div>
+<div class="footer" id="footerStatus">未登入時資料保存在此瀏覽器；使用 Email＋密碼登入後會同步到 Supabase。</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://hnalykfgfsewigjngeij.supabase.co';
@@ -375,7 +377,7 @@ function setSyncStatus(text, isError=false){
   const el=document.getElementById('syncStatus');
   if(el){el.textContent=text; el.style.color=isError?'#b42318':'var(--muted)';}
   const footer=document.getElementById('footerStatus');
-  if(footer) footer.textContent=currentUser ? `已登入 ${currentUser.email}｜${text}` : '未登入時資料保存在此瀏覽器；使用 Google 使用 Google 登入後會同步到 Supabase。';
+  if(footer) footer.textContent=currentUser ? `已登入 ${currentUser.email}｜${text}` : '未登入時資料保存在此瀏覽器；使用 Email＋密碼登入後會同步到 Supabase。';
 }
 function updateAuthUI(){
   document.getElementById('signedOutUI').style.display=currentUser?'none':'block';
@@ -383,23 +385,44 @@ function updateAuthUI(){
   document.getElementById('userEmail').textContent=currentUser?`登入帳號：${currentUser.email}`:'';
   setSyncStatus(currentUser?'已登入，準備同步':'未登入');
 }
-async function signInWithGoogle(){
-  if(location.protocol === 'file:'){
-    alert('Google 登入必須從 GitHub Pages 的 https 網址開啟，不能直接雙擊 HTML 檔。');
+async function signInWithPassword(){
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  if(!email || !password){
+    alert('請輸入 Email 和密碼。');
     return;
   }
-  const redirectTo = window.location.origin + window.location.pathname;
-  const {error} = await cloud.auth.signInWithOAuth({
-    provider:'google',
-    options:{
-      redirectTo,
-      queryParams:{
-        access_type:'offline',
-        prompt:'select_account'
-      }
-    }
-  });
-  if(error) alert('Google 登入失敗：' + error.message);
+  setSyncStatus('正在登入…');
+  const {error}=await cloud.auth.signInWithPassword({email,password});
+  if(error){
+    setSyncStatus('登入失敗：'+error.message,true);
+    alert('登入失敗：'+error.message);
+  }
+}
+
+async function signUpWithPassword(){
+  const email=document.getElementById('authEmail').value.trim();
+  const password=document.getElementById('authPassword').value;
+  if(!email || !password){
+    alert('請輸入 Email 和密碼。');
+    return;
+  }
+  if(password.length < 6){
+    alert('密碼至少需要 6 碼。');
+    return;
+  }
+  setSyncStatus('正在建立帳號…');
+  const {data,error}=await cloud.auth.signUp({email,password});
+  if(error){
+    setSyncStatus('建立帳號失敗：'+error.message,true);
+    alert('建立帳號失敗：'+error.message);
+    return;
+  }
+  if(data.session){
+    alert('帳號已建立並登入。');
+  }else{
+    alert('帳號已建立。若 Supabase 開啟了 Email confirmation，請先到信箱確認；若你已關閉確認信，請直接按登入。');
+  }
 }
 async function signOut(){
   await cloud.auth.signOut();
