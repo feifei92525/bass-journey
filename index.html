@@ -94,9 +94,11 @@
       <div class="xpBox" id="authBox">
         <strong>☁️ 雲端同步</strong>
         <div id="signedOutUI" style="margin-top:10px">
-          <input id="authEmail" type="text" inputmode="email" placeholder="你的 Email" style="width:100%">
-          <button onclick="sendMagicLink()" style="width:100%;margin-top:8px">寄登入連結</button>
-          <div class="mini" style="margin-top:8px">手機與電腦登入同一個信箱，就會同步同一份紀錄。</div>
+          <button onclick="signInWithGoogle()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px">
+            <span style="font-size:18px">G</span>
+            使用 Google 登入
+          </button>
+          <div class="mini" style="margin-top:8px">手機與電腦登入同一個 Google 帳號，就會同步同一份紀錄。</div>
         </div>
         <div id="signedInUI" style="display:none;margin-top:10px">
           <div class="mini" id="userEmail"></div>
@@ -173,7 +175,7 @@
     </main>
   </div>
 </div>
-<div class="footer" id="footerStatus">未登入時資料保存在此瀏覽器；登入後會同步到 Supabase。</div>
+<div class="footer" id="footerStatus">未登入時資料保存在此瀏覽器；使用 Google 使用 Google 登入後會同步到 Supabase。</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://hnalykfgfsewigjngeij.supabase.co';
@@ -373,7 +375,7 @@ function setSyncStatus(text, isError=false){
   const el=document.getElementById('syncStatus');
   if(el){el.textContent=text; el.style.color=isError?'#b42318':'var(--muted)';}
   const footer=document.getElementById('footerStatus');
-  if(footer) footer.textContent=currentUser ? `已登入 ${currentUser.email}｜${text}` : '未登入時資料保存在此瀏覽器；登入後會同步到 Supabase。';
+  if(footer) footer.textContent=currentUser ? `已登入 ${currentUser.email}｜${text}` : '未登入時資料保存在此瀏覽器；使用 Google 使用 Google 登入後會同步到 Supabase。';
 }
 function updateAuthUI(){
   document.getElementById('signedOutUI').style.display=currentUser?'none':'block';
@@ -381,13 +383,23 @@ function updateAuthUI(){
   document.getElementById('userEmail').textContent=currentUser?`登入帳號：${currentUser.email}`:'';
   setSyncStatus(currentUser?'已登入，準備同步':'未登入');
 }
-async function sendMagicLink(){
-  const email=document.getElementById('authEmail').value.trim();
-  if(!email){alert('請先輸入 Email');return;}
-  const redirectTo=location.protocol.startsWith('http') ? location.href.split('#')[0] : undefined;
-  const {error}=await cloud.auth.signInWithOtp({email, options:{emailRedirectTo:redirectTo}});
-  if(error){alert('登入連結寄送失敗：'+error.message);return;}
-  alert('登入連結已寄出。請在信箱點開連結，再回到這個網頁。');
+async function signInWithGoogle(){
+  if(location.protocol === 'file:'){
+    alert('Google 登入必須從 GitHub Pages 的 https 網址開啟，不能直接雙擊 HTML 檔。');
+    return;
+  }
+  const redirectTo = window.location.origin + window.location.pathname;
+  const {error} = await cloud.auth.signInWithOAuth({
+    provider:'google',
+    options:{
+      redirectTo,
+      queryParams:{
+        access_type:'offline',
+        prompt:'select_account'
+      }
+    }
+  });
+  if(error) alert('Google 登入失敗：' + error.message);
 }
 async function signOut(){
   await cloud.auth.signOut();
