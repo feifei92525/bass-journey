@@ -1,15 +1,13 @@
-Bass Journey｜Supabase 同步版
+《弦間小日子》可測試網頁 V1
 
-1. 到 Supabase 專案左側 SQL Editor。
-2. 新增 Query，貼上 setup.sql 全部內容，按 Run。
-3. 到 Authentication → Providers → Email，確認 Email 已啟用。
-4. 到 Authentication → URL Configuration：
-   - Site URL 填你部署後的網址。
-   - Redirect URLs 加入同一網址（可加 /*）。
-5. 把整個資料夾部署到 GitHub Pages、Netlify 或 Cloudflare Pages。
-6. 手機和電腦都開同一網址，輸入同一 Email，點信箱中的 Magic Link 登入。
+這是第一個可測試的 Supabase 整合版本，不是完整正式版。
+已完成：藍粉配色、桌面左側/手機頂部導覽、Email 密碼登入、每日練習新增/讀取、練習紀錄、本機離線草稿。
+未完成：雙人配對、老師回饋、老師專屬印章、Google OAuth、舊版所有紀錄自動遷移、其他音樂工具。
 
-注意：
-- 直接用 file:// 開啟時，本機儲存可以用，但 Magic Link 重新導向通常不穩定。
-- 建議部署到 HTTPS 網址後再正式使用。
-- Publishable key 可以放在前端；資料安全依賴 setup.sql 的 RLS。
+重要：
+1. 只上傳至 GitHub 的 v2-development 分支，不要覆蓋 main。
+2. 測試前備份舊網站資料；不要執行新的 SQL。
+3. 本測試版不會自動批次同步或搬移舊資料，也不會刪除舊資料。
+4. 登入後只會在你按「儲存今日練習」時寫入當天 practice_days 的 data；若當天已有舊版資料，會被新格式覆蓋！因此請先使用「沒有舊練習紀錄」的日期測試，或使用專門測試帳號。
+5. 未登入時資料保存在目前瀏覽器；登入後不會自動合併訪客草稿。
+6. GitHub Pages 若要預覽此分支，需要另外設定分支部署或用獨立預覽環境；請勿更改目前 main 的 Pages 發布來源。
